@@ -4,9 +4,9 @@
 #PBS -l select=1:ncpus=1:mpiprocs=1:model=bro
 # Submit job to the devel queue
 #PBS -q devel
-# Send an e-mail on abort, begin, and end
-#PBS -m abe
-#PBS -M heather.cronk@colostate.edu,philip.partain@colostate.edu
+# Send an e-mail on abort
+#PBS -m a
+#PBS -M heather.cronk@colostate.edu
 
 # Load the compiler used to compile
 module load comp-intel/2018.3.222 mpi-sgi/mpt
