@@ -9,7 +9,7 @@
 #PBS -M heather.cronk@colostate.edu
 
 # Load the compiler used to compile
-module load comp-intel/2018.3.222 mpi-sgi/mpt
+module load comp-intel/2018.3.222
 
 # By default, PBS executes your job from your home directory.
 export PBS_O_WORKDIR=~/test-scripts
