@@ -26,7 +26,7 @@ base_data_dir="/nobackup/hcronk/data"
 # NTS: When you add that capability, add a check to make sure all the data is there before starting
 gran="20160324_box1_sa2_chunk001"
 # Eventually discover this in the granule directory with a regex
-sel_file="single_sounding_for_testing.txt"
+sel_file="sounding_selection_subset_for_testing.txt"
 
 ### Set Up Retrieval and Log Directories ###
 ret_dir=${base_data_dir}/${gran}/l2fp_retrievals
