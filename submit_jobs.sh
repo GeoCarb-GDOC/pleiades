@@ -15,5 +15,33 @@ module load comp-intel/2018.3.222
 export PBS_O_WORKDIR=~/test-scripts
 cd $PBS_O_WORKDIR
 
-# Run the test
-./run_l2_fp.csh /nobackup/hcronk/test-config/geocarb_test.with_aerosol-with_brdf.lua ~/"RtRetrievalFramework/input/geocarb/config/?.lua" /nobackup/hcronk/data/20160324_box1_sa2_chunk001/geocarb_meteorology_rx_intensity_20160324_box1_sa2_1x1_chunk001.h5 "" /nobackup/hcronk/data/20160324_box1_sa2_chunk001/geocarb_l1b_rx_intensity_20160324_1x1_box1_sa2-with_aerosol-brdf_3_chunk001.h5 /nobackup/hcronk/data/20160324_box1_sa2_chunk001/geocarb_L2Ret_2016032414010006716_20160324_1x1_box1_sa2-with_aerosol-brdf_3_chunk001.h5 2016032414010006716> ~/ditl_1/test_run_real_data.log
+####################################
+### Start GeoCarb Specific Stuff ###
+####################################
+
+### Declare Variables ###
+# Eventually make this a command line option with a default value
+base_data_dir="/nobackup/hcronk/data"
+# Eventually loop over the granule dirs and get gran from there
+# NTS: When you add that capability, add a check to make sure all the data is there before starting
+gran="20160324_box1_sa2_chunk001"
+# Eventually discover this in the granule directory with a regex
+sel_file="single_sounding_for_testing.txt"
+
+### Set Up Retrieval and Log Directories ###
+ret_dir=${base_data_dir}/${gran}/l2fp_retrievals
+log_dir=${base_data_dir}/${gran}/l2fp_logs
+
+mkdir -p ${ret_dir}
+mkdir -p ${log_dir}
+
+### Get Info from the Sounding Selection File ###
+while read line
+do
+    sid=${line}
+    # To discuss with Phil: if we need to re-run a sounding, do we want to preserve the originally produced file and log?
+    output_filename=${ret_dir}/geocarb_L2FPRet_${sid}_${gran}.h5
+    log_filename=${log_dir}/geocarb_L2FPlog_${sid}_${gran}.log
+    
+    ./run_l2_fp.csh /nobackup/hcronk/test-config/geocarb_test.with_aerosol-with_brdf.lua ~/"RtRetrievalFramework/input/geocarb/config/?.lua" ${base_data_dir}/${gran}/geocarb_meteorology*.h5 "" ${base_data_dir}/${gran}/geocarb_l1b*.h5 ${output_filename} ${sid}> $log_filename
+done<${base_data_dir}/${gran}/${sel_file}
