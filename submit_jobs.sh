@@ -1,7 +1,7 @@
 #PBS -S /bin/bash
 
-# Select one node with 
-#PBS -l select=1:ncpus=1:mpiprocs=1:model=bro
+# Select one Broadwell node and use all 28 cores
+#PBS -l select=1:ncpus=28:model=bro
 # Submit job to the devel queue
 #PBS -q devel
 # Send an e-mail on abort
@@ -25,8 +25,18 @@ base_data_dir="/nobackup/hcronk/data"
 # Eventually loop over the granule dirs and get gran from there
 # NTS: When you add that capability, add a check to make sure all the data is there before starting
 gran="20160324_box1_sa2_chunk001"
-# Eventually discover this in the granule directory with a regex
-sel_file="sounding_selection_subset_for_testing.txt"
+
+#Get sounding selection file for the given granule
+ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt &> /dev/null
+ret=$?
+
+if [ $ret -eq 0 ]; then
+    sel_file=($(ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt))
+else
+    echo "Sounding selection file not found"
+    ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt
+    exit
+fi
 
 ### Set Up Retrieval and Log Directories ###
 ret_dir=${base_data_dir}/${gran}/l2fp_retrievals
