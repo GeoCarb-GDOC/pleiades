@@ -9,10 +9,11 @@
 #PBS -M heather.cronk@colostate.edu
 
 # Load the compiler used to compile
-module load comp-intel/2018.3.222
+# module load comp-intel/2018.3.222
 
 # By default, PBS executes your job from your home directory.
-export PBS_O_WORKDIR=~/test-scripts
+# export PBS_O_WORKDIR=~/test-scripts
+export PBS_O_WORKDIR=~/ditl_1/submit_jobs
 cd $PBS_O_WORKDIR
 
 ####################################
@@ -21,7 +22,7 @@ cd $PBS_O_WORKDIR
 
 ### Declare Variables ###
 # Eventually make this a command line option with a default value
-base_data_dir="/nobackup/hcronk/data"
+base_data_dir="/nobackup/hcronk/data/process"
 # Eventually loop over the granule dirs and get gran from there
 # NTS: When you add that capability, add a check to make sure all the data is there before starting
 gran="20160324_box1_sa2_chunk001"
@@ -45,13 +46,4 @@ log_dir=${base_data_dir}/${gran}/l2fp_logs
 mkdir -p ${ret_dir}
 mkdir -p ${log_dir}
 
-### Get Info from the Sounding Selection File ###
-while read line
-do
-    sid=${line}
-    # To discuss with Phil: if we need to re-run a sounding, do we want to preserve the originally produced file and log?
-    output_filename=${ret_dir}/geocarb_L2FPRet_${sid}_${gran}.h5
-    log_filename=${log_dir}/geocarb_L2FPlog_${sid}_${gran}.log
-    
-    ./run_l2_fp.csh /nobackup/hcronk/test-config/geocarb_test.with_aerosol-with_brdf.lua ~/"RtRetrievalFramework/input/geocarb/config/?.lua" ${base_data_dir}/${gran}/geocarb_meteorology*.h5 "" ${base_data_dir}/${gran}/geocarb_l1b*.h5 ${output_filename} ${sid}> $log_filename
-done<${base_data_dir}/${gran}/${sel_file}
+cat ${sel_file} | parallel -j 28 --sshloginfile $PBS_NODEFILE "cd $PWD;./process_granule_soundings.sh ${base_data_dir} ${gran} {}"
