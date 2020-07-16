@@ -12,12 +12,9 @@
 #PBS -m a
 #PBS -M heather.cronk@colostate.edu
 
-# Load the compiler used to compile
-# module load comp-intel/2018.3.222
-
 # By default, PBS executes your job from your home directory.
 # export PBS_O_WORKDIR=~/test-scripts
 export PBS_O_WORKDIR=~/ditl_1/submit_jobs
 cd $PBS_O_WORKDIR
 
-cat ${sel_file} | parallel -j ${njobs} --sshloginfile $PBS_NODEFILE "cd $PWD;./process_granule_soundings.sh ${base_data_dir} ${gran} ${ret_dir} ${log_dir} {}"
+cat ${sel_file} | parallel -j ${njobs} --sshloginfile $PBS_NODEFILE "cd $PWD;./process_granule_soundings.csh ${base_data_dir} ${gran} ${ret_dir} ${log_dir} {}"
