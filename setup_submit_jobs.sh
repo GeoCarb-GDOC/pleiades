@@ -8,9 +8,9 @@
 base_data_dir="/nobackup/hcronk/data/process"
 # Eventually loop over the granule dirs and get gran from there
 # NTS: When you add that capability, add a check to make sure all the data is there before starting
-grans=($(ls -d ${base_data_dir}/*))
+###grans=($(ls -d ${base_data_dir}/*))
 ###grans=("20160324_box3_sa1_chunk009" "20160324_box3_sa1_chunk012" "20160324_box4_na_chunk019" "20160324_box4_na_chunk021" "20160324_box5_ca_chunk013" "20160324_box5_ca_chunk015" "20160324_box5_ca_chunk017") 
-###grans=("20160324_box4_na_chunk021")
+grans=("20160324_box1_sa2_chunk001")
 ###gran="20160324_box2_sa3_chunk017"
 njobs=100
 
@@ -32,8 +32,8 @@ do
     fi
 
     ### Set Up Retrieval and Log Directories ###
-    ret_dir=${base_data_dir}/${gran}/l2fp_retrievals
-    log_dir=${base_data_dir}/${gran}/l2fp_logs
+    ret_dir=${base_data_dir}/${gran}/singularity_test/l2fp_retrievals
+    log_dir=${base_data_dir}/${gran}/singularity_test/l2fp_logs
 
     mkdir -p ${ret_dir}
     mkdir -p ${log_dir}
