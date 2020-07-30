@@ -10,7 +10,7 @@ base_data_dir="/nobackup/hcronk/data/process"
 # NTS: When you add that capability, add a check to make sure all the data is there before starting
 ###grans=($(ls -d ${base_data_dir}/*))
 ###grans=("20160324_box3_sa1_chunk009" "20160324_box3_sa1_chunk012" "20160324_box4_na_chunk019" "20160324_box4_na_chunk021" "20160324_box5_ca_chunk013" "20160324_box5_ca_chunk015" "20160324_box5_ca_chunk017") 
-grans=("20160324_box1_sa2_chunk001")
+grans=("013-007-022_20160729123556")
 ###gran="20160324_box2_sa3_chunk017"
 njobs=100
 
@@ -19,15 +19,15 @@ do
     gran=$(basename ${gran})
     echo ${gran}
     #Get sounding selection file for the given granule
-    ###ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt &> /dev/null
-    ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt &> /dev/null
+    ###ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt &> /dev/null
+    ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt &> /dev/null
     ret=$?
 
     if [ $ret -eq 0 ]; then
-        sel_file=($(ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt))
+        sel_file=($(ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt))
     else
         echo "Sounding selection file not found"
-        ls ${base_data_dir}/${gran}/geocarb_L2SEL*.txt
+        ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt
         exit
     fi
 
