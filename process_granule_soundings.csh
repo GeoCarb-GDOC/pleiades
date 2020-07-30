@@ -26,5 +26,5 @@ set sid=$argv[5]
 set output_filename=${ret_dir}/geocarb_L2FPRet_${sid}_${gran}.h5
 set log_filename=${log_dir}/geocarb_L2FPlog_${sid}_${gran}.log
 
-singularity exec -B /nobackup/hcronk:/nobackup/hcronk /nobackup/hcronk/singularity/geocarb_l2fp_exec ./run_l2_fp.csh /nobackup/hcronk/test-config/geocarb_test.with_aerosol-with_brdf.lua ~/"RtRetrievalFramework/input/geocarb/config/?.lua" ${base_data_dir}/${gran}/geocarb_meteorology*.h5 "" ${base_data_dir}/${gran}/geocarb_l1b*.h5 ${output_filename} ${sid}> $log_filename
+singularity exec -B /usr/local/lib:/usr/local/lib -B /nobackup/hcronk:/nobackup/hcronk /nobackup/hcronk/singularity/geocarb_l2fp_exec ./run_l2_fp.csh /nobackup/hcronk/test-config/geocarb_test.with_aerosol-with_brdf.lua ~/"RtRetrievalFramework/input/geocarb/config/?.lua" ${base_data_dir}/${gran}/geocarb_L2Met*.h5 "" ${base_data_dir}/${gran}/geocarb_L1bSc*.h5 ${output_filename} ${sid}> $log_filename
 
