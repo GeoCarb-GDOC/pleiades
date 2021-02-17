@@ -12,8 +12,24 @@ base_data_dir="/nobackup/hcronk/data/process"
 ###grans=("20160324_box3_sa1_chunk009" "20160324_box3_sa1_chunk012" "20160324_box4_na_chunk019" "20160324_box4_na_chunk021" "20160324_box5_ca_chunk013" "20160324_box5_ca_chunk015" "20160324_box5_ca_chunk017") 
 grans=("023-011-027_20160729133048")
 njobs=100
-#eventually pull this keyword arg from the command line
-verbose=true
+
+user=""
+verbose="false"
+while getopts "u:v" flag
+do
+  case "${flag}" in
+    u) user="${OPTARG}" ;;
+    v) verbose="true" ;;
+    *) echo "Unrecognized flag. Only -v (verbose) is available"
+       exit ;;
+  esac
+done
+
+if [ ! ${user} ]; then
+    echo "Please provide NAS username for checking PBS jobs using -u flag"
+    exit
+fi
+
 
 for gran in ${grans[@]}
 do
@@ -21,8 +37,9 @@ do
     #if so, wait 5 mins and try again
     if not, move along
     gran=$(basename ${gran})
-    if verbose; then
+    if [ "$verbose" == "true" ]; then
         echo "Checking input data for ${gran}"
+    fi
     
     #Check for L1b, L2Met, and L2Sel input files 
     #(leave easy mechanism to add other input files as needed)
