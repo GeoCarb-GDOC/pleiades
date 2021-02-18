@@ -33,9 +33,15 @@ fi
 
 for gran in ${grans[@]}
 do
-    #qstat to see if any jobs are running since right now we can only run one at a time
-    #if so, wait 5 mins and try again
-    if not, move along
+    
+    check_current_pbs_jobs=($(qstat -u ${user} | awk "/^[0-9]{8}/" | wc -l ))
+    while [[ ${check_current_pbs_jobs} > 0 ]]
+    do
+             #while there is a job running, wait
+        sleep 1m
+        check_current_pbs_jobs=($(qstat -u ${user} | awk "/^[0-9]{8}/" | wc -l ))
+    done
+    
     gran=$(basename ${gran})
     if [ "$verbose" == "true" ]; then
         echo "Checking input data for ${gran}"
@@ -78,7 +84,7 @@ do
     ### cat ${sel_file} | parallel -j ${njobs} --sshloginfile $PBS_NODEFILE "cd $PWD;./process_granule_soundings.sh ${base_data_dir} ${gran} ${ret_dir} ${log_dir} {}"
 
     qsub -l select=${nnodes}:model=bro -v sel_file=${sel_file},njobs=${njobs},base_data_dir=${base_data_dir},gran=${gran},ret_dir=${ret_dir},log_dir=${log_dir} ~/ditl_1/submit_jobs/submit_jobs.sh
-    sleep 50m
+
     #capture jobID from qsub from stdout
     #qstat to see that the job is in PBS queue or running
     #if error or DNE, note in lockfile (record of having tried it) but 
