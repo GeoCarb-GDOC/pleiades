@@ -6,8 +6,7 @@
 ### Declare Variables ###
 # Eventually make this a command line option with a default value
 base_data_dir="/nobackup/hcronk/data/process"
-# Eventually loop over the granule dirs and get gran from there
-# NTS: When you add that capability, add a check to make sure all the data is there before starting
+input_data_products=("L1bSc" "L2Met" "L2Sel")
 ###grans=($(ls -d ${base_data_dir}/*))
 ###grans=("20160324_box3_sa1_chunk009" "20160324_box3_sa1_chunk012" "20160324_box4_na_chunk019" "20160324_box4_na_chunk021" "20160324_box5_ca_chunk013" "20160324_box5_ca_chunk015" "20160324_box5_ca_chunk017") 
 grans=("023-011-027_20160729133048")
@@ -37,7 +36,7 @@ do
     check_current_pbs_jobs=($(qstat -u ${user} | awk "/^[0-9]{8}/" | wc -l ))
     while [[ ${check_current_pbs_jobs} > 0 ]]
     do
-             #while there is a job running, wait
+        #while there is a job running, wait
         sleep 1m
         check_current_pbs_jobs=($(qstat -u ${user} | awk "/^[0-9]{8}/" | wc -l ))
     done
@@ -47,26 +46,19 @@ do
         echo "Checking input data for ${gran}"
     fi
     
-    #Check for L1b, L2Met, and L2Sel input files 
-    #(leave easy mechanism to add other input files as needed)
-    #once this is in place, can just pull the sel_file= line
-    #from the section below...but probably the lockfile should be 
-    #created checked and/or created right before the selection file is 
-    #recorded
+    #Check/create lockfile here eventually
     
-    #Get sounding selection file for the given granule
-    ###ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt &> /dev/null
-    ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt &> /dev/null
-    ret=$?
-
-    if [ $ret -eq 0 ]; then
-        sel_file=($(ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt))
-    else
-        echo "Sounding selection file not found"
-        ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt
-        #exit
-        continue
-    fi
+    for input_product in ${input_data_products[@]}
+    do
+        ls ${base_data_dir}/${gran}/geocarb_${input_product}_${gran}*  &> /dev/null
+        ret=$?
+        if [ $ret -ne 0 ]; then
+            echo "Input file for ${input_product} DNE."
+            continue 2
+    done
+    
+    #Get sounding selection file for the given granule   
+    sel_file=($(ls ${base_data_dir}/${gran}/geocarb_L2Sel*.txt))
     
     ### Set Up Retrieval and Log Directories ###
     ret_dir=${base_data_dir}/${gran}/l2fp_retrievals
