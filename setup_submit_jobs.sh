@@ -7,9 +7,9 @@
 # Eventually make this a command line option with a default value
 base_data_dir="/nobackup/hcronk/data/process"
 input_data_products=("L1bSc" "L2Met" "L2Sel")
-###grans=($(ls -d ${base_data_dir}/*))
+grans=($(ls -d ${base_data_dir}/*))
 ###grans=("20160324_box3_sa1_chunk009" "20160324_box3_sa1_chunk012" "20160324_box4_na_chunk019" "20160324_box4_na_chunk021" "20160324_box5_ca_chunk013" "20160324_box5_ca_chunk015" "20160324_box5_ca_chunk017") 
-grans=("023-011-027_20160729133048")
+###grans=("023-011-027_20160729133048")
 njobs=100
 
 user=""
@@ -55,6 +55,7 @@ do
         if [ $ret -ne 0 ]; then
             echo "Input file for ${input_product} DNE."
             continue 2
+        fi
     done
     
     #Get sounding selection file for the given granule   
